@@ -22,9 +22,8 @@ class Cita(models.Model):
     tipo = models.CharField(max_length=20, choices=TIPOS, default='primera')
     estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
     created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ['-fecha', '-hora']
 
-class Meta:
-    ordering = ['-fecha', '-hora']
-
-def __str__(self):
-    return f'{self.paciente} - {self.fecha} {self.hora}'
+    def __str__(self):
+        return f'{self.paciente} - {self.fecha} {self.hora}'

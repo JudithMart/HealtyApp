@@ -28,7 +28,10 @@
 
         <activity
             android:name=".ui.patients.PatientsActivity"
-            android:exported="true" />
+            android:exported="true"
+
+            />
+        <activity android:name=".ui.citas.CitasActivity" />
 
     </application>
 

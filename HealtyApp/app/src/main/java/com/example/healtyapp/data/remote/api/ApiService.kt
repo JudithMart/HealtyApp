@@ -4,6 +4,8 @@ import com.example.healtyapp.data.remote.dto.LoginRequest
 import com.example.healtyapp.data.remote.dto.TokenResponse
 import com.example.healtyapp.data.remote.dto.Patient
 import com.example.healtyapp.data.remote.dto.PageResponse
+import com.example.healtyapp.data.remote.dto.PageResponseCita
+import com.example.healtyapp.data.remote.dto.Appointment
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -19,4 +21,15 @@ interface ApiService {
         @Query("page") page: Int,
         @Query("page_size") pageSize: Int = 10
     ): Call<PageResponse<Patient>>
+
+    @GET("citas/")
+        fun getCitas(
+            @Query("page") page: Int,
+            @Query("page_size") pageSize: Int = 10,
+            @Query("paciente") pacienteId: Int
+        ): Call<PageResponseCita<Appointment>>
+
+    @POST("citas/")
+    fun crearCita(@Body body: Appointment): Call<Appointment>
+
 }

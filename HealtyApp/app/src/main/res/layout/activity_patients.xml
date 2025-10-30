@@ -17,7 +17,8 @@
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="16dp"
         android:text="Cargar Más"
-        android:visibility="gone" /> <!-- Inicialmente oculto -->
+        android:background="@color/purple_200"
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/progress"
