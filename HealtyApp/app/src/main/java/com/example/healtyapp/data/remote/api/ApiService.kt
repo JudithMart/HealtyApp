@@ -6,6 +6,9 @@ import com.example.healtyapp.data.remote.dto.Patient
 import com.example.healtyapp.data.remote.dto.PageResponse
 import com.example.healtyapp.data.remote.dto.PageResponseCita
 import com.example.healtyapp.data.remote.dto.Appointment
+import com.example.healtyapp.data.remote.dto.Registro
+import com.example.healtyapp.data.remote.dto.PageResponseRegistro
+
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -31,5 +34,15 @@ interface ApiService {
 
     @POST("citas/")
     fun crearCita(@Body body: Appointment): Call<Appointment>
+
+    @GET("registros/")
+       fun getRegistros(
+        @Query("cita") citaId: Int,
+        @Query("page") page: Int=1,
+       ): Call<PageResponse<Registro>>
+       
+    @POST("registros/")
+    fun crearRegistro(@Body body: Registro): Call<Registro>
+    
 
 }
