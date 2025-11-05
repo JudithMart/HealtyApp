@@ -36,10 +36,10 @@ interface ApiService {
     fun crearCita(@Body body: Appointment): Call<Appointment>
 
     @GET("registros/")
-       fun getRegistros(
-        @Query("cita") citaId: Int,
-        @Query("page") page: Int=1,
-       ): Call<PageResponse<Registro>>
+    fun getRegistros(
+        @Query("cita") citaId: Int? = null,
+        @Query("page") page: Int = 1
+    ): Call<PageResponse<Registro>>
        
     @POST("registros/")
     fun crearRegistro(@Body body: Registro): Call<Registro>

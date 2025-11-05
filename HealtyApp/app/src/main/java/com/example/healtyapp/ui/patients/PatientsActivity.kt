@@ -22,6 +22,8 @@ class PatientsActivity : AppCompatActivity() {
 
 	// Esta inicialización ahora es correcta porque el Adapter SÍ espera una función
 	private val adapter = PatientsAdapter { patient ->
+
+		//AQUÍ LLAMO LAS CITAS
 		val i = Intent(this, CitasActivity::class.java)
 		i.putExtra("paciente_id", patient.id)
 		startActivity(i)

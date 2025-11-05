@@ -32,6 +32,8 @@
 
             />
         <activity android:name=".ui.citas.CitasActivity" />
+        <activity android:name=".ui.registros.RegistrosActivity" />
+
 
     </application>
 

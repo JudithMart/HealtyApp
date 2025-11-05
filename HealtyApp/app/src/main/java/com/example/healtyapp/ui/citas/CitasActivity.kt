@@ -14,37 +14,38 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
+import com.example.healtyapp.ui.registros.RegistrosActivity
+import android.content.Intent
 
 class CitasActivity : ComponentActivity() {
     private val vm: CitasViewModel by viewModels()
-    private val adapter = CitasAdapter()
+    private lateinit var adapter: CitasAdapter
     private val scope = MainScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_citas)
 
+        adapter = CitasAdapter { cita ->
+            val i = Intent(this, RegistrosActivity::class.java)
+            i.putExtra("cita_id", cita.id)
+            startActivity(i)
+        }
+
+        val rv = findViewById<RecyclerView>(R.id.rvCitas)
+        rv.layoutManager = LinearLayoutManager(this)
+        rv.adapter = adapter // Asigna el adaptador ya configurado
+
+
+
         val pacienteId = intent.getIntExtra("paciente_id", -1)
         require(pacienteId != -1)
 
-        val rv = findViewById<RecyclerView>(R.id.rvCitas)
+
         val progress = findViewById<ProgressBar>(R.id.progress)
         val btnNueva = findViewById<Button>(R.id.btnNueva)
 
-        rv.layoutManager = LinearLayoutManager(this)
-        rv.adapter = adapter
 
-        rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-                val lm = rv.layoutManager as LinearLayoutManager
-                val visible = lm.childCount
-                val total = lm.itemCount
-                val first = lm.findFirstVisibleItemPosition()
-                if (dy > 0 && first + visible >= total - 4 && vm.state.value.hasNext) {
-                    vm.load(pacienteId, vm.state.value.page + 1)
-                }
-            }
-        })
 
         btnNueva.setOnClickListener { mostrarDialogoNueva(pacienteId) }
 

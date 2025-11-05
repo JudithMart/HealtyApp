@@ -21,6 +21,6 @@ android:layout_height="match_parent">
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="60dp"
-        android:background="@color/purple_200"
+        android:backgroundTint="@color/purple_200"
         android:text="Nueva Cita" />
 </FrameLayout>      
