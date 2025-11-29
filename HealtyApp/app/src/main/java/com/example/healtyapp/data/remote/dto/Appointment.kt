@@ -7,7 +7,10 @@ data class Appointment(
     val hora: String, // &quot;HH:mm:ss&quot;
     val motivo: String,
     val tipo: String, // &quot;primera&quot; | &quot;seguimiento&quot;
-    val estado: String // &quot;pendiente&quot; | &quot;asistida&quot; | &quot;cancelada&quot;
+    val estado: String, // &quot;pendiente&quot; | &quot;asistida&quot; | &quot;cancelada&quot;
+    val actividad_psicologica: String?,
+    val afirmacion: String?
+
 )
 
 data class PageResponseCita<T>(

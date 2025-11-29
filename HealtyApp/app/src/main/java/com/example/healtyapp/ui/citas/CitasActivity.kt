@@ -42,7 +42,8 @@ class CitasActivity : ComponentActivity() {
         require(pacienteId != -1)
 
 
-        val progress = findViewById<ProgressBar>(R.id.progress)
+        val progress = findViewById<ProgressBar>(R.id.progressBar)
+
         val btnNueva = findViewById<Button>(R.id.btnNueva)
 
 
@@ -63,23 +64,64 @@ class CitasActivity : ComponentActivity() {
 }
 
     private fun mostrarDialogoNueva(pacienteId: Int) {
-    // Diálogo simple con DatePicker y TimePicker
-    val cal = Calendar.getInstance()
-    DatePickerDialog(this, { _, y, m, d ->
-        val fecha = String.format("%04d-%02d-%02d", y, m+1, d)
-        TimePickerDialog(this, { _, hh, mm ->
-            val hora = String.format("%02d:%02d:00", hh, mm)
-            // Datos básicos para crear cita
-            val motivo = "Consulta"
+        val dialogView = layoutInflater.inflate(R.layout.dialog_nueva_cita, null)
+
+        val etActividad = dialogView.findViewById<EditText>(R.id.etActividad)
+        val etAfirmacion = dialogView.findViewById<EditText>(R.id.etAfirmacion)
+        val tvFecha = dialogView.findViewById<TextView>(R.id.tvFecha)
+        val tvHora = dialogView.findViewById<TextView>(R.id.tvHora)
+        val btnGuardar = dialogView.findViewById<Button>(R.id.btnGuardar)
+
+        val cal = Calendar.getInstance()
+        var fechaSeleccionada = ""
+        var horaSeleccionada = ""
+
+        tvFecha.setOnClickListener {
+            DatePickerDialog(this, { _, y, m, d ->
+                fechaSeleccionada = String.format("%04d-%02d-%02d", y, m + 1, d)
+                tvFecha.text = "Fecha: $fechaSeleccionada"
+            }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        tvHora.setOnClickListener {
+            TimePickerDialog(this, { _, hh, mm ->
+                horaSeleccionada = String.format("%02d:%02d:00", hh, mm)
+                tvHora.text = "Hora: $horaSeleccionada"
+            }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
+        }
+
+        val dialog = android.app.AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        dialog.show()
+
+        btnGuardar.setOnClickListener {
+            val actividad = etActividad.text.toString()
+            val afirmacion = etAfirmacion.text.toString()
+
+            if (actividad.isBlank() || afirmacion.isBlank() || fechaSeleccionada.isBlank() || horaSeleccionada.isBlank()) {
+                Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val nueva = Appointment(
-                id = 0, paciente = pacienteId, fecha = fecha, hora = hora,
-                motivo = motivo, tipo = "primera", estado = "pendiente"
+                id = 0,
+                paciente = pacienteId,
+                fecha = fechaSeleccionada,
+                hora = horaSeleccionada,
+                motivo = "Consulta",
+                tipo = "primera",
+                estado = "pendiente",
+                actividad_psicologica = actividad,
+                afirmacion = afirmacion
             )
-            vm.crearCita(nueva) { Toast.makeText(this, "Cita creada",
-                Toast.LENGTH_SHORT).show() }
-        }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE),
-        true).show()
-    }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
-    cal.get(Calendar.DAY_OF_MONTH)).show()
- }
+
+            vm.crearCita(nueva) {
+                Toast.makeText(this, "Cita creada", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+        }
+    }
+
 }

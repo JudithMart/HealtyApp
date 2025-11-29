@@ -1,11 +1,14 @@
 package com.example.healtyapp.ui.citas
+
 import android.view.*
 import android.widget.TextView
 import androidx.recyclerview.widget.*
 import com.example.healtyapp.R
 import com.example.healtyapp.data.remote.dto.Appointment
 
-class CitasAdapter(private val onClick: (Appointment) -> Unit) : ListAdapter<Appointment, CitasAdapter.VH>(DIFF) {
+class CitasAdapter(private val onClick: (Appointment) -> Unit)
+    : ListAdapter<Appointment, CitasAdapter.VH>(DIFF) {
+
     companion object {
         private val DIFF = object : DiffUtil.ItemCallback<Appointment>() {
             override fun areItemsTheSame(o: Appointment, n: Appointment) = o.id == n.id
@@ -13,27 +16,31 @@ class CitasAdapter(private val onClick: (Appointment) -> Unit) : ListAdapter<App
         }
     }
 
+    class VH(view: View, val onClick: (Appointment) -> Unit) : RecyclerView.ViewHolder(view) {
+        private val tvFH: TextView = view.findViewById(R.id.tvFechaHora)
+        private val tvMotivo: TextView = view.findViewById(R.id.tvMotivo)
+        private val tvMeta: TextView = view.findViewById(R.id.tvMeta)
 
-class VH(v: View, val onClick: (Appointment) -> Unit): RecyclerView.ViewHolder(v) {
-    private val tvFH = v.findViewById<TextView>(R.id.tvFechaHora)
-    private val tvMotivo = v.findViewById<TextView>(R.id.tvMotivo)
-    private val tvMeta = v.findViewById<TextView>(R.id.tvMeta)
-    fun bind(a: Appointment) {
-    tvFH.text ="${a.fecha} · ${a.hora}"
-        tvMotivo.text = a.motivo
-        tvMeta.text ="Tipo: ${a.tipo} · Estado: ${a.estado}"
+        fun bind(cita: Appointment) {
+            tvFH.text = "${cita.fecha} · ${cita.hora}"
+            tvMotivo.text = "Motivo: ${cita.motivo}"
 
-        itemView.setOnClickListener { onClick(a) }
-    }
+            val actividad = cita.actividad_psicologica ?: "Sin actividad asignada"
+            val afirmacion = cita.afirmacion ?: "Sin afirmación asignada"
+
+            tvMeta.text = "Actividad: $actividad\nAfirmación: $afirmacion"
+
+            itemView.setOnClickListener { onClick(cita) }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val v = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_cita, parent, false)
-        // 4. Pasamos la función onClick al crear el ViewHolder
         return VH(v, onClick)
     }
 
-
-    override fun onBindViewHolder(h: VH, pos: Int) = h.bind(getItem(pos))
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        holder.bind(getItem(position))
+    }
 }
