@@ -23,7 +23,7 @@ class Cita(models.Model):
     estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
     created_at = models.DateTimeField(auto_now_add=True)
     #agregado
-    nactividad_psicologica = models.TextField(null=True, blank=True)
+    actividad_psicologica = models.TextField(null=True, blank=True)
     afirmacion = models.TextField(null=True, blank=True)
 
     class Meta:

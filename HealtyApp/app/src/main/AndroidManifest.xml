@@ -33,6 +33,7 @@
             />
         <activity android:name=".ui.citas.CitasActivity" />
         <activity android:name=".ui.registros.RegistrosActivity" />
+        <activity android:name=".ui.registros.RegistroPacienteActivity" />
 
 
     </application>

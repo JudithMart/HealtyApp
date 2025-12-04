@@ -6,41 +6,46 @@ import androidx.recyclerview.widget.*
 import com.example.healtyapp.R
 import com.example.healtyapp.data.remote.dto.Appointment
 
-class CitasAdapter(private val onClick: (Appointment) -> Unit)
-    : ListAdapter<Appointment, CitasAdapter.VH>(DIFF) {
+class CitasAdapter(
+    private val onClick: (Appointment) -> Unit
+) : ListAdapter<Appointment, CitasAdapter.VH>(DIFF) {
 
     companion object {
         private val DIFF = object : DiffUtil.ItemCallback<Appointment>() {
-            override fun areItemsTheSame(o: Appointment, n: Appointment) = o.id == n.id
-            override fun areContentsTheSame(o: Appointment, n: Appointment) = o == n
+            override fun areItemsTheSame(old: Appointment, new: Appointment) =
+                old.id == new.id
+
+            override fun areContentsTheSame(old: Appointment, new: Appointment) =
+                old == new
         }
     }
 
-    class VH(view: View, val onClick: (Appointment) -> Unit) : RecyclerView.ViewHolder(view) {
-        private val tvFH: TextView = view.findViewById(R.id.tvFechaHora)
-        private val tvMotivo: TextView = view.findViewById(R.id.tvMotivo)
-        private val tvMeta: TextView = view.findViewById(R.id.tvMeta)
+    class VH(
+        v: View,
+        private val onClick: (Appointment) -> Unit
+    ) : RecyclerView.ViewHolder(v) {
 
-        fun bind(cita: Appointment) {
-            tvFH.text = "${cita.fecha} · ${cita.hora}"
-            tvMotivo.text = "Motivo: ${cita.motivo}"
+        private val tvFH = v.findViewById<TextView>(R.id.tvFechaHora)
+        private val tvMotivo = v.findViewById<TextView>(R.id.tvMotivo)
+        private val tvMeta = v.findViewById<TextView>(R.id.tvMeta)
 
-            val actividad = cita.actividad_psicologica ?: "Sin actividad asignada"
-            val afirmacion = cita.afirmacion ?: "Sin afirmación asignada"
+        fun bind(a: Appointment) {
+            tvFH.text = "${a.fecha} · ${a.hora}"
+            tvMotivo.text = a.motivo
+            tvMeta.text = "Tipo: ${a.tipo} · Estado: ${a.estado}"
 
-            tvMeta.text = "Actividad: $actividad\nAfirmación: $afirmacion"
-
-            itemView.setOnClickListener { onClick(cita) }
+            itemView.setOnClickListener { onClick(a) }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_cita, parent, false)
-        return VH(v, onClick)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
+        VH(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_cita, parent, false),
+            onClick
+        )
 
-    override fun onBindViewHolder(holder: VH, position: Int) {
+    override fun onBindViewHolder(holder: VH, position: Int) =
         holder.bind(getItem(position))
-    }
 }
+
