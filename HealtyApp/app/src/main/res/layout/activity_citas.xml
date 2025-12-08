@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#FFFFFF"
     android:padding="16dp">
 
     <ProgressBar
@@ -10,27 +11,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
-
-    <!-- LISTA DE CITAS -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCitas"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-
-    <!-- BOTÓN NUEVA CITA -->
     <Button
         android:id="@+id/btnNueva"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:text="Nueva Cita"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
         android:backgroundTint="@color/purple_200"
-        android:text="Nueva Cita" />
+        android:padding="12dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="8dp" />
 
 </LinearLayout>

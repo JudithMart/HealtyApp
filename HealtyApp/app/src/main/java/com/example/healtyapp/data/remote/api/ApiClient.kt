@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object ApiClient {
-    private const val BASE_URL = "http://10.0.2.2:8000/"
+    private const val BASE_URL = "http://192.168.1.22:8000/"
 
     // Variable para guardar la instancia de la API y no crearla cada vez
     private var apiService: ApiService? = null

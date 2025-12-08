@@ -15,6 +15,7 @@ class Cita(models.Model):
         ('seguimiento', 'Seguimiento'),
     )
 
+
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, related_name='citas')
     fecha = models.DateField()
     hora = models.TimeField()

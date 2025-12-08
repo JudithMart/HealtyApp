@@ -1,50 +1,53 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:padding="20dp"
-    android:background="@android:color/white"
+    android:background="#FFFFFF"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <EditText
         android:id="@+id/etActividad"
+        android:hint="Actividad psicológica"
+        android:background="#F5F5F5"
+        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Actividad psicológica"
         android:layout_marginBottom="12dp"/>
 
     <EditText
         android:id="@+id/etAfirmacion"
+        android:hint="Afirmación terapéutica"
+        android:background="#F5F5F5"
+        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Tarea"
         android:layout_marginBottom="12dp"/>
 
     <TextView
         android:id="@+id/tvFecha"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Seleccionar fecha"
-        android:textSize="16sp"
-        android:padding="12dp"
         android:background="#EEEEEE"
-        android:layout_marginBottom="12dp"/>
+        android:textColor="#333333"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/tvHora"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Seleccionar hora"
-        android:textSize="16sp"
-        android:padding="12dp"
+        android:textColor="#333333"
         android:background="#EEEEEE"
-        android:layout_marginBottom="20dp"/>
+        android:padding="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/btnGuardar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Guardar Cita"
-        android:backgroundTint="@color/purple_200" />
-
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/purple_200"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>
