@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set "VIRTUAL_ENV=C:\Users\aguim\Desktop\NOVENO_SEMESTRE\JORDY\healty_backend\venv"
+set "VIRTUAL_ENV=C:\Users\aguim\Documents\GitHub\HealtyApp\healty_backend\venv"
 
 if not defined PROMPT set PROMPT=$P$G
 
