@@ -1,3 +1,4 @@
+
 // src/modules/pacientes/types.js
 
 export function mapPacienteFromApi(apiPaciente) {
@@ -5,15 +6,10 @@ export function mapPacienteFromApi(apiPaciente) {
     id: apiPaciente.id,
     nombre: apiPaciente.nombre,
     apellido: apiPaciente.apellido,
-    genero: apiPaciente.genero, // si existe en tu modelo
-    edad: apiPaciente.edad,     // si existe en tu modelo
-    telefono: apiPaciente.telefono, // si lo tienes definido
-    email: apiPaciente.email,       // opcional
+    genero: apiPaciente.genero,
+    edad: apiPaciente.edad,
   };
 }
-
-// Estructura típica de respuesta de DRF:
-// { count, next, previous, results }
 
 export function mapPageResponse(apiResponse, mapItemFn) {
   return {

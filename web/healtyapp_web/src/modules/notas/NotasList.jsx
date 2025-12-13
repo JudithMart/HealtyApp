@@ -1,145 +1,137 @@
+// src/modules/notas/NotasList.jsx
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { fetchNotas, deleteNota } from "./notas.api";
-
-const styles = {
-    page: {
-        background: "#FFFFFF",
-        padding: 20,
-        minHeight: "80vh",
-        color: "#333",
-    },
-    header: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    btnPrimary: {
-        background: "#7B4BDB",
-        color: "#fff",
-        padding: "10px 14px",
-        border: "none",
-        borderRadius: 8,
-        cursor: "pointer",
-    },
-    card: {
-        background: "#fff",
-        borderRadius: 10,
-        padding: 14,
-        boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
-        marginBottom: 12,
-    },
-};
+import { ui } from "../../styles/ui";
 
 export default function NotasList() {
-    const navigate = useNavigate();
-    const { id: routeCitaId } = useParams();          // /citas/:id/registros
-    const location = useLocation();
+  const navigate = useNavigate();
+  const { id: routeCitaId } = useParams();
+  const location = useLocation();
 
-    const params = new URLSearchParams(location.search);
-    const citaQuery = params.get("cita") || "";
+  const params = new URLSearchParams(location.search);
+  const citaQuery = params.get("cita") || "";
 
-    const citaFilterInicial = citaQuery || routeCitaId || "";
+  const citaFilter = citaQuery || routeCitaId || "";
 
-    const [notas, setNotas] = useState([]);
-    const [citaFilter, setCitaFilter] = useState(citaFilterInicial);
-    const [page, setPage] = useState(1);
-    const [total, setTotal] = useState(0);
-    const [loading, setLoading] = useState(false);
-    const pageSize = 10;
+  const [notas, setNotas] = useState([]);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-    async function cargarNotas() {
-        setLoading(true);
-        try {
-            const data = await fetchNotas({ page, cita: citaFilter });
-            setNotas(data.resultados);
-            setTotal(data.total);
-        } finally {
-            setLoading(false);
-        }
+  const pageSize = 10;
+  const totalPages = Math.ceil(total / pageSize) || 1;
+
+  async function cargarNotas() {
+    setLoading(true);
+    try {
+      const data = await fetchNotas({ page, cita: citaFilter });
+      setNotas(data.resultados);
+      setTotal(data.total);
+    } catch (e) {
+      console.error("Error al cargar notas:", e);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    useEffect(() => {
-        cargarNotas();
-    }, [page, citaFilter]);
+  useEffect(() => {
+    cargarNotas();
+  }, [page, citaFilter]);
 
-    function handleNuevo() {
-        const url = `/notas/nueva${citaFilter ? `?cita=${citaFilter}` : ""}`;
-        navigate(url);
+  function handleNuevo() {
+    navigate(`/notas/nueva${citaFilter ? `?cita=${citaFilter}` : ""}`);
+  }
+
+  function handleEditar(id) {
+    navigate(`/notas/${id}/editar${citaFilter ? `?cita=${citaFilter}` : ""}`);
+  }
+
+  async function handleEliminar(id) {
+    if (!window.confirm("¿Deseas eliminar este registro psicológico?")) return;
+    try {
+      await deleteNota(id);
+      cargarNotas();
+    } catch (e) {
+      console.error("Error al eliminar:", e);
+      alert("Error al eliminar el registro");
     }
+  }
 
-    function handleEditar(id) {
-        const url = `/notas/${id}/editar${citaFilter ? `?cita=${citaFilter}` : ""}`;
-        navigate(url);
-    }
-
-    async function handleEliminar(id) {
-        if (!window.confirm("¿Eliminar esta nota?")) return;
-        await deleteNota(id);
-        cargarNotas();
-    }
-
-    const totalPages = Math.ceil(total / pageSize) || 1;
-
-    return (
-        <div style={styles.page}>
-            <div style={styles.header}>
-                <h2 style={{ color: "#5D3FD3" }}>
-                    {citaFilter ? "Registros de la cita" : "Notas psicológicas"}
-                </h2>
-
-                <button style={styles.btnPrimary} onClick={handleNuevo}>
-                    Nuevo registro
-                </button>
-            </div>
-
-            {citaFilter ? (
-                <p>Mostrando registros de la cita <strong>#{citaFilter}</strong></p>
-            ) : (
-                <p>Mostrando todas las notas</p>
-            )}
-
-            {loading ? <p>Cargando...</p> : null}
-
-            {notas.length === 0 && !loading ? (
-                <div style={{ ...styles.card, textAlign: "center" }}>
-                    No hay registros.
-                </div>
-            ) : (
-                notas.map((n) => (
-                    <div key={n.id} style={styles.card}>
-                        <div style={{ fontWeight: "bold" }}>{n.fecha}</div>
-                        <div>Estado emocional: {n.estado_emocional}</div>
-                        <div style={{ marginTop: 8 }}>{n.observaciones}</div>
-
-                        <div style={{ marginTop: 10 }}>
-                            <button onClick={() => handleEditar(n.id)} style={{ marginRight: 10 }}>
-                                Editar
-                            </button>
-                            <button
-                                onClick={() => handleEliminar(n.id)}
-                                style={{ color: "red" }}
-                            >
-                                Eliminar
-                            </button>
-                        </div>
-                    </div>
-                ))
-            )}
-
-            <div style={{ marginTop: 20 }}>
-                <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
-                    Anterior
-                </button>
-
-                <span style={{ margin: "0 10px" }}>
-                    Página {page} de {totalPages}
-                </span>
-
-                <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
-                    Siguiente
-                </button>
-            </div>
+  return (
+    <div style={ui.page}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        <div>
+          <h2 style={ui.title}>Registro psicológico</h2>
+          <p style={ui.subtitle}>
+            Seguimiento emocional del paciente
+            {citaFilter && ` · Cita #${citaFilter}`}
+          </p>
         </div>
-    );
+
+        <button style={ui.button} onClick={handleNuevo}>
+          Nuevo registro
+        </button>
+      </div>
+
+      {loading ? (
+        <p>Cargando registros...</p>
+      ) : notas.length === 0 ? (
+        <div style={{ ...ui.card, textAlign: "center", color: "#6B7280" }}>
+          No hay registros psicológicos para mostrar.
+        </div>
+      ) : (
+        notas.map((nota) => (
+          <div key={nota.id} style={ui.card}>
+            <div style={{ marginBottom: 8, fontWeight: 600 }}>
+              {nota.fecha}
+            </div>
+
+            <div style={{ color: "#6B7280", marginBottom: 8 }}>
+              Cumplió: <strong>{nota.cumplio ? "Sí" : "No"}</strong>
+            </div>
+
+            <div style={{ marginBottom: 12 }}>
+              {nota.observaciones || "Sin observaciones"}
+            </div>
+
+            <div style={{ display: "flex", gap: 10 }}>
+              <button style={ui.buttonSecondary} onClick={() => handleEditar(nota.id)}>
+                Editar
+              </button>
+
+              <button
+                style={{ ...ui.buttonSecondary, color: "#B91C1C" }}
+                onClick={() => handleEliminar(nota.id)}
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        ))
+      )}
+
+      <div style={{ marginTop: 20, display: "flex", alignItems: "center", gap: 12 }}>
+        <button
+          style={ui.button}
+          disabled={page === 1}
+          onClick={() => setPage((p) => p - 1)}
+        >
+          Anterior
+        </button>
+
+        <span>
+          Página {page} de {totalPages}
+        </span>
+
+        <button
+          style={ui.button}
+          disabled={page >= totalPages}
+          onClick={() => setPage((p) => p + 1)}
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+  );
 }

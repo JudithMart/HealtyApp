@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchCitas, deleteCita } from "./citas.api";
 import { fetchPacientes } from "../pacientes/pacientes.api"; // usando la API ya creada
+import { ui } from "../../styles/ui";
+
 
 export default function CitasList() {
   const navigate = useNavigate();
@@ -27,22 +29,15 @@ export default function CitasList() {
   const pageSize = 10; // ajusta a tu configuración
   const totalPaginas = Math.ceil(total / pageSize);
 
-  async function cargarPacientes() {
-    try {
-      // Podrías pedir la primera página con muchos resultados para llenar el combo
-      const data = await fetchCitas({
-        page,
-        pacienteId: pacienteFiltro,  // antes: pacienteId
-        tipo,
-        fechaInicio,
-        fechaFin,
-      });
-
-    } catch (e) {
-      // no es crítico si falla, pero lo puedes loggear
-      console.error(e);
-    }
+ async function cargarPacientes() {
+  try {
+    const data = await fetchPacientes({ page: 1 });
+    setPacientes(data.resultados);
+  } catch (e) {
+    console.error(e);
   }
+}
+
 
   async function cargarCitas() {
     setLoading(true);
@@ -102,128 +97,44 @@ export default function CitasList() {
   }
 
   return (
-    <div>
-      <h2>Citas</h2>
+    <div style={ui.page}>
+      <h2 style={ui.title}>Citas psicológicas</h2>
 
-      {error && <p>{error}</p>}
+      <button
+        style={ui.button}
+        onClick={() =>
+          pacienteId
+            ? navigate(`/citas/nueva?paciente=${pacienteId}`)
+            : navigate("/citas/nueva")
+        }
+      >
+        Nueva cita
+      </button>
 
-      {/* Filtros */}
-      <div style={{ marginBottom: "1rem" }}>
-        <select
-          value={pacienteId}
-          onChange={(e) => {
-            setPacienteId(e.target.value);
-            setPage(1);
-          }}
-        >
-          <option value="">Todos los pacientes</option>
-          {pacientes.map((pac) => (
-            <option key={pac.id} value={pac.id}>
-              {pac.nombre} {pac.apellido}
-            </option>
-          ))}
-        </select>
 
-        <select
-          value={tipo}
-          onChange={(e) => {
-            setTipo(e.target.value);
-            setPage(1);
-          }}
-          style={{ marginLeft: "0.5rem" }}
-        >
-          <option value="">Todos los tipos</option>
-          <option value="Primera vez">Primera vez</option>
-          <option value="Seguimiento">Seguimiento</option>
-        </select>
 
-        <input
-          type="date"
-          value={fechaInicio}
-          onChange={(e) => {
-            setFechaInicio(e.target.value);
-            setPage(1);
-          }}
-          style={{ marginLeft: "0.5rem" }}
-        />
+      {citas.map((cita) => (
+        <div key={cita.id} style={ui.card}>
+          <strong>{cita.fecha} – {cita.hora}</strong>
+          <p style={{ color: "#6B7280" }}>{cita.tipo}</p>
+          <p>{cita.motivo}</p>
 
-        <input
-          type="date"
-          value={fechaFin}
-          onChange={(e) => {
-            setFechaFin(e.target.value);
-            setPage(1);
-          }}
-          style={{ marginLeft: "0.5rem" }}
-        />
+          <div style={{ display: "flex", gap: 10 }}>
+            <button style={ui.button} onClick={() => handleEditar(cita.id)}>Editar</button>
+            <button style={ui.buttonSecondary} onClick={() => navigate(`/citas/${cita.id}/notas`)}>
+              Ver registros
+            </button>
+            <button
+              style={ui.buttonSecondary}
+              onClick={() => navigate(`/notas/nueva?cita=${cita.id}`)}
+            >
+              Registrar nota
+            </button>
 
-        <button onClick={handleNuevaCita} style={{ marginLeft: "1rem" }}>
-          Nueva cita
-        </button>
-      </div>
-
-      {loading ? (
-        <p>Cargando...</p>
-      ) : (
-        <table border="1" cellPadding="6" cellSpacing="0">
-          <thead>
-            <tr>
-              <th>Paciente</th>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Tipo</th>
-              <th>Motivo</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {citas.length === 0 ? (
-              <tr>
-                <td colSpan="6">No hay citas para mostrar.</td>
-              </tr>
-            ) : (
-              citas.map((cita) => (
-                <tr key={cita.id}>
-                  <td>{cita.pacienteNombre || cita.pacienteId}</td>
-                  <td>{cita.fecha}</td>
-                  <td>{cita.hora}</td>
-                  <td>{cita.tipo}</td>
-                  <td>{cita.motivo}</td>
-                  <td>
-                    <button onClick={() => handleEditar(cita.id)}>Editar</button>
-                    <button onClick={() => handleEliminar(cita.id)}>Eliminar</button>
-                    <button onClick={() => navigate(`/citas/${cita.id}/notas`)} style={{ marginRight: 8 }}>
-                      Ver registros
-                    </button>
-
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      )}
-
-      {/* Paginación */}
-      <div style={{ marginTop: "1rem" }}>
-        <button
-          onClick={() => setPage((p) => Math.max(p - 1, 1))}
-          disabled={page === 1}
-        >
-          Anterior
-        </button>
-
-        <span style={{ margin: "0 0.5rem" }}>
-          Página {page} de {totalPaginas || 1}
-        </span>
-
-        <button
-          onClick={() => setPage((p) => p + 1)}
-          disabled={page >= totalPaginas}
-        >
-          Siguiente
-        </button>
-      </div>
+          </div>
+        </div>
+      ))}
     </div>
+
   );
 }

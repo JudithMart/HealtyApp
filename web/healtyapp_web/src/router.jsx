@@ -12,6 +12,7 @@ import CitaForm from "./modules/citas/CistasForm";
 import Dashboard from "./views/Dashboard";
 import NotasList from "./modules/notas/NotasList";
 import NotaForm from "./modules/notas/NotaForm";
+import Reportes from "./modules/reportes/Reportes";
 
 export default function AppRouter() {
   function PrivateRoute({ children }) {
@@ -114,6 +115,13 @@ export default function AppRouter() {
           }
         />
 
+          <Route 
+          path="/reportes" 
+          element={
+            <PrivateRoute>
+          <Reportes />
+          </PrivateRoute>
+        } />
 
       </Routes>
     </BrowserRouter>
